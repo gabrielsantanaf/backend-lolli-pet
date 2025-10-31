@@ -8,6 +8,7 @@ import tokenRoutes from './src/routes/tokenRoutes'
 import fotoRoutes from './src/routes/fotoRoutes'
 import clienteRoutes from './src/routes/clienteRoutes'
 import petRoutes from './src/routes/petRoutes'
+import agendamentoRoutes from './src/routes/agendamentoRoutes'
 
 import './src/database'
 
@@ -35,6 +36,7 @@ class App {
     this.app.use('/fotos/', fotoRoutes)
     this.app.use('/clientes', clienteRoutes)
     this.app.use('/pets', petRoutes)
+    this.app.use('/agendamentos', agendamentoRoutes)
   }
 }
 

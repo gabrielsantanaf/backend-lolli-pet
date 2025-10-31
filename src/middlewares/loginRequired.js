@@ -49,7 +49,7 @@ export default async(req, res, next) => {
       })
     }
 
-    req.veterinarioId = id
+    req.veterinario_id = id
     req.veterinarioEmail = email
 
     return next()
