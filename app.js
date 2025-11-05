@@ -24,7 +24,7 @@ class App {
 
   middlewares() {
     const corsOptions = {
-      origin: ['http://localhost:3000', 'https://localhost:5173'],  // Múltiplas origens
+      origin: ['http://localhost:3000', 'http://localhost:5173'],
 
       // Permite envio de cookies e headers de autenticação
       credentials: true,

@@ -27,12 +27,19 @@ class VeterinarioController {
 
   async show(req, res) {
     try {
-      const veterinario = await Veterinario.findByPk(req.params.id)
+      //const veterinario = await Veterinario.findByPk(req.params.id)
+      const veterinarioId = req.veterinarioId || req.veterinario_id
 
-      const { id, nome, email } = veterinario
-      return res.json({ id, nome, email })
+      const veterinario = await Veterinario.findByPk(veterinarioId, {
+        attributes: [ 'id' , 'nome', 'email']
+      })
+
+      if (!veterinario)
+        return res.status(404).json({err: ['Veterinário não encontrado']})
+
+      return res.json(veterinario)
     } catch (err) {
-      return res.json(err)
+      return res.status(500).json({err: [err.message]})
     }
   }
 
