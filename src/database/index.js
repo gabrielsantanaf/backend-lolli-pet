@@ -4,9 +4,11 @@ import Veterinario from '../models/Veterinario'
 import Foto from '../models/Foto'
 import Cliente from '../models/Cliente'
 import Pet from '../models/Pet'
+import Prontuario from '../models/Prontuario'
+import ProntuarioArquivo from '../models/ProntuarioArquivo'
 import Agendamento from '../models/Agendamento'
 
-const models = [Veterinario, Foto, Cliente, Pet, Agendamento]
+const models = [Veterinario, Foto, Cliente, Pet, Prontuario, ProntuarioArquivo, Agendamento]
 
 const connection = new Sequelize(databaseConfig)
 

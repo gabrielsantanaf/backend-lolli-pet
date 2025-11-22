@@ -10,6 +10,7 @@ import fotoRoutes from './src/routes/fotoRoutes'
 import clienteRoutes from './src/routes/clienteRoutes'
 import petRoutes from './src/routes/petRoutes'
 import agendamentoRoutes from './src/routes/agendamentoRoutes'
+import prontuarioRoutes from './src/routes/prontuarioRoutes'
 
 import './src/database'
 
@@ -61,6 +62,7 @@ class App {
     this.app.use('/clientes', clienteRoutes)
     this.app.use('/pets', petRoutes)
     this.app.use('/agendamentos', agendamentoRoutes)
+    this.app.use('/prontuarios', prontuarioRoutes)
   }
 }
 

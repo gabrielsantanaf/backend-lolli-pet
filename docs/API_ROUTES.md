@@ -272,6 +272,121 @@ Erros comuns:
 
 ---
 
+**8) Prontuários (Histórico clínico de um Pet)**
+- Base: `/prontuarios`
+
+8.1 Listar histórico de um pet
+- Método: `GET`
+- Path: `/prontuarios?pet_id=:id`
+- Auth: sim (header `Authorization: Bearer <token>`)
+- Query params:
+  - `pet_id` (integer, obrigatório)
+- Descrição: retorna o histórico (prontuários) do pet ordenado por data (desc). Cada item inclui `arquivos` (array com `{ id, nome, filename, url }`).
+- Resposta (200): array de objetos
+```json
+[
+  {
+    "id": 1,
+    "pet_id": 5,
+    "data": "2025-11-20T14:00:00.000Z",
+    "tipo": "Consulta",
+    "descricao": "Check-up de rotina. Peso normal.",
+    "responsavel": "Dr. Juliana",
+    "arquivos": []
+  }
+]
+```
+
+8.2 Criar entrada no prontuário
+- Método: `POST`
+- Path: `/prontuarios`
+- Auth: sim
+- Content-Type: `application/json`
+- Body:
+```json
+{
+  "pet_id": 5,
+  "data": "2025-11-20",
+  "tipo": "Consulta",
+  "descricao": "Texto do atendimento",
+  "responsavel": "Dr. Fulano"
+}
+```
+- Validações/observações:
+  - `pet_id`, `data`, `tipo`, `descricao`, `responsavel` são obrigatórios.
+  - `tipo` aceita os valores: `Consulta`, `Exame`, `Vacina`, `Banho`, `Tosa`, `Outro`.
+  - `descricao` máximo 1000 caracteres.
+  - `pet_id` deve existir no banco.
+- Resposta (200): objeto criado (inclui `arquivos: []` por padrão)
+
+8.3 Atualizar entrada do prontuário
+- Método: `PUT`
+- Path: `/prontuarios/:id`
+- Auth: sim
+- Body (application/json): qualquer campo atualizável, por exemplo:
+```json
+{ "descricao": "Texto atualizado", "tipo": "Exame" }
+```
+- Validações: `tipo` deve ser válido; `descricao` ≤ 1000 chars
+- Resposta (200): objeto atualizado
+
+8.4 Deletar entrada do prontuário
+- Método: `DELETE`
+- Path: `/prontuarios/:id`
+- Auth: sim
+- Resposta (200): `null` quando removido
+
+---
+
+**Arquivos de Prontuário**
+
+Os arquivos (imagens e PDFs) associados a um prontuário são salvos em disco em `uploads/files` e registrados na tabela `prontuario_arquivos`.
+
+- Tipos aceitos: `image/png`, `image/jpeg`, `image/jpg`, `application/pdf`.
+- URL pública (quando disponível): `http://<host>/files/<filename>` (o `app.js` serve `uploads` como estático). Além disso há um endpoint protegido para download.
+
+8.A Upload de arquivo para um prontuário
+- Método: `POST`
+- Path: `/prontuarios/:id/arquivos`
+- Auth: sim
+- Content-Type: `multipart/form-data`
+- Campo form-data obrigatório: `arquivo` (file)
+- Resposta (200): `{ id, nome, url }` (nome = nome original, url = URL pública montada)
+
+Exemplo cURL (upload):
+```bash
+curl -X POST "http://localhost:3001/prontuarios/10/arquivos" \
+  -H "Authorization: Bearer <token>" \
+  -F "arquivo=@/caminho/para/arquivo.pdf"
+```
+
+8.B Listar arquivos de um prontuário
+- Método: `GET`
+- Path: `/prontuarios/:id/arquivos`
+- Auth: sim
+- Resposta (200): array de `{ id, nome, filename, url }`
+
+8.C Download protegido de arquivo
+- Método: `GET`
+- Path: `/prontuarios/arquivos/:id`
+- Auth: sim
+- Descrição: faz download/stream do arquivo (usa `res.download` e envia `Content-Disposition` com o nome original)
+- Exemplo cURL:
+```bash
+curl -L -X GET "http://localhost:3001/prontuarios/arquivos/7" \
+  -H "Authorization: Bearer <token>" -o "arquivo_original.pdf"
+```
+
+8.D Deletar arquivo de prontuário
+- Método: `DELETE`
+- Path: `/prontuarios/arquivos/:id`
+- Auth: sim
+- Descrição: remove registro do DB e apaga arquivo do disco
+
+---
+
+---
+
 **Erros padronizados**
 - Validações de modelo retornam 400 com formato:
 ```json
